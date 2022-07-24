@@ -1,0 +1,79 @@
+SPEC CPU 2006的bzip2基准程序在AMD Barcelona处理器上执行的总指令数为2.38x107,执
+行时间为750s,参考时间为9650s。
+1.11.1. 如果时钟周期时间为0.33ns,求CPI值。
+1.11.2. 求SPEC的分值。
+1.11.3. 如果基准程序的指令数增加10%，CPI不变,求CPU时间增加多少?
+1.11.4. 如果基准程序的指令数增加10%，CPI增加5%，求CPU时间增加多少?
+1.11.5 根据上题中指令数和CPI的变化，求SPEC分值的变化。
+1.11.6 假设开发了一款新的AMD Barcelona处理器,其工作频率为4GHz,在其指令集中.
+增加了一些新的指令，从而使程序中指令数目减少了15%，程序的执行时间减少到了700s,
+新的CPI分值为13.7,求新的CPI。
+1.11.7 当时钟频率由3GHz.上升到4GHz时，上一小题算出的CPI比1.11.1的高。请确
+定CPI的升高是否与频率升高相同?如果不同，为什么?
+1.11.8 CPU时间减少了多少?
+1.11.9 对第二个基准程序libquantum,假定执行时间为960ns，CPI 为1.61,时钟频率为
+3GHz。在时钟频率为4GHz时，在不影响CPI的前提下执行时间降低10%，求指令数。
+1.11.10 在指令数和CPI保持不变的前提下，如果要将CPU时间进一 步减少10%，求时钟
+频率。
+1.11.11 在指令数保持不变的前提下，如果要将CPI降低15%，CPU时间减少20%，求时
+钟频率。
+
+答:
+1.11.1 
+CPI = clock rate * CPU time/instr. count
+clock rate = 1/cycle time = 3 GHz
+CPI(bzip2) = 3 * 109 * 750/(2389 * 109)
+           = 0.94
+
+1.11.2 
+SPEC ratio = ref. time/execution time
+SPEC ratio(bzip2) = 9650/750 
+                  = 12.86
+
+1.11.3. 
+CPU time = No. instr. * CPI/clock rate
+如果CPI和时钟频率都不变，那么CPU时间的增长幅度和指令的增长幅度相同都是10%
+
+1.11.4 
+CPU time(before) = No. instr. * CPI/clock rate
+CPU time(aft er) = 1.1 * No. instr. * 1.05 * CPI/clock rate
+CPU time(aft er)/CPU time(before) = 1.1 * 1.05  = 1.155. Thus, CPU time 
+is increased by 15.5%.
+
+1.11.5 
+SPECratio = reference time/CPU time
+SPECratio(aft er)/SPECratio(before) = CPU time(before)/CPU time(after) 
+                                    = 1/1.1555 
+                                    = 0.86. 
+The SPECratio is decreased by 14%.
+
+1.11.6
+CPI = (CPU time * clock rate)/No. instr.
+CPI = 700 * 4 * 10^9 /(0.85 * 2389 * 10^9) 
+    = 1.37
+
+1.11.7
+Clock rate ratio = 4 GHz/3 GHz = 1.33
+CPI @ 4 GHz = 1.37, CPI @ 3 GHz = 0.94, ratio = 1.45
+They are different because, although the number of instructions has been 
+reduced by 15%, the CPU time has been reduced by a lower percentage。
+
+1.11.8 
+700/750 = 0.933. CPU time reduction: 6.7%
+
+1.11.9 
+No. instr. = CPU time * clock rate/CPI
+No. instr. = 960 * 0.9 * 4 * 10^9 /1.61 
+           = 2146 * 10^9
+
+1.11.10 
+Clock rate = No. instr. * CPI/CPU time.
+Clock ratenew = No. instr. * CPI/(0.9 * CPU time) 
+              = 1/0.9 clock rateold
+              = 3.33 GHz
+
+1.11.11 
+Clock rate = No. instr. * CPI/CPU time.
+Clock ratenew = No. instr. * 0.85 * CPI/(0.80 * CPU time) 
+              = 0.85/0.80 * clock rateold 
+              = 3.18 GHz

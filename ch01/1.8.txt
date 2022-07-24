@@ -1,0 +1,29 @@
+2004 年发布的Pentium 4 Prescott 处理器时钟频率为3.6CHz,工作电压为1.25V。假定平均情况
+下静态功耗为10W,动态功耗为90W。
+2012年发布的Core i5 Ivy Bridge 时钟频率为3.4GHz,工作电压为0.9V。假定平均情况下静态功
+耗为30W,动态功耗为40W。
+
+1.8.1. 分别求出每个处理器的平均电容负载。
+1.8.2. 对于每种工艺,求出静态功耗占总功耗的比例和静态功耗相对于动态功耗的比率。
+1.8.3. 如果要将整体功耗降低10%，求出在保持漏电流不变的情况下电压要降低多少?
+注意:功耗定义为电压与电流的乘积。
+
+答:
+1.8.1:
+C = 2 * DP/(V^2*F)       C: 负载电容, DP: 动态功耗, V: 电压, F: 开关频率
+Pentium 4: C = 3.2E–8F
+Core i5 Ivy Bridge: C = 2.9E–8F
+
+1.8.2:
+Pentium 4: 10/100 = 10%
+Core i5 Ivy Bridge: 30/70 = 42.9%
+
+1.8.3:
+ (Snew + Dnew)/(Sold + Dold) = 0.90
+Dnew = C * Vnew 2 * F
+Sold = Vold * I
+Snew = Vnew * I
+Th erefore:
+Vnew = [Dnew/(C * F)]^1/2
+Dnew = 0.90 * (Sold + Dold) * Snew
+Snew = Vnew * (Sold/Vold)
