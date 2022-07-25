@@ -1,0 +1,26 @@
+假定一个程序需要执行50x 106条浮点指令、110x 106条整数指令、80x106条L/S指令和16
+x106条分支指令。每种类型指令的CPI分别是1、1、4和2。假定处理器的时钟频率为2GHz。
+1.14.1 如果我们要将程序运行速度提高至2倍,浮点指令的CPI需如何改进?
+1.14.2 如果我们要将程序运行速度提高至2倍，L/S 指令的CPI需如何改进?
+1.14.3 如果整数和浮点指令的CPI减少40%，L/S和分支指令的CPI减少30%，程序的执
+行时间能改进多少?
+
+1.14.1
+Clock(fp) = 50 * 106, Clock(int) = 110 * 106, 
+Clock(L/S) = 320 * 106, Clock(B) = 32 * 106
+Clock = Clock(fp) + Clock(int) + Clock(L/S) + Clock(B)
+      = 54272 
+Clock(new) = 54272  / 2 = 27136
+Clock(dec) = 27136 > Clock(fp)
+not possible
+
+1.14.2
+Clock(fp) = 50 * 106, Clock(int) = 110 * 106, 
+Clock(L/S) = 320 * 106, Clock(B) = 32 * 106
+Clock = Clock(fp) + Clock(int) + Clock(L/S) + Clock(B)
+      = 54272 
+Clock(new) = 54272  / 2 = 27136
+Clock(L/S new) =  Clock(L/S) - 27136 = 6784
+CPI(L/S new) = (1 - (Clock(L/S new) / Clock(L/S)) ) * CPI(L/S) = 0.8
+
+
