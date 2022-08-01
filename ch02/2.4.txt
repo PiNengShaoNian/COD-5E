@@ -1,0 +1,26 @@
+下面的MIPS汇编语言程序段对应的C语言表达式是什么?假设变量f、g、h、
+i和j分别赋值给寄存器$s0、$s1、 $s2、$s3和$s4。假设数组A和B的基地址分别在寄
+存器$s6和$s7中。
+s11 $t0, $s0, 2      # $t0 = f*4
+add $t0, $s6, $t0    # $t0 = &A[f]
+sll $t1, $s1, 2      # $t1 = g * 4
+add $t1. $s7， $t1   # $t1 = &B[g]
+lw  $s0，0($t0)      # f = A[f]
+addi $t2, $t0, 4
+lw $t0，0($t2)
+add $t0, $t0, $s0
+SW $t0, 0($t1)
+
+答:
+t0 = f * 4
+t0 = A + t0 = A + f * 4
+t1 = g * 4
+t1 = B + t1 = B + g * 4
+s0 = Mem[t0] = Mem[A + f * 4]
+t2 = t0 + 4 = A + f * 4 + 4
+t0 = Mem[t2] = Mem[A + f * 4 + 4]
+t0 = t0 + s0 = Mem[A + f * 4 + 4] + Mem[A + f * 4]
+Mem[t1] = t0
+
+等价C代码
+B[g] = A[f + 1] + A[f]
