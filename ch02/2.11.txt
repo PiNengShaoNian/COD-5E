@@ -1,0 +1,10 @@
+对于每条MIPS指令，写出操作码(OP)、 源操作数(RS)和目标操作数
+(RT)的值(value)。 对于I型指令，写出立即数字段的值。对于R型指令，写出目的寄存器
+(RD)字段的值。
+
+                       type     opcode      rs      rt      rd     immed
+addi $t0, $s6, 4      I-type       8        22      8               4
+add  $t1, $s6, $0     R-type       0        22      0       9 
+sw  $t1, 0($t0)       I-type       43       8       9               0
+lw  $t0, 0($t0)       I-type       35       8       8               0
+add $s0, $t1, $t0     R-type       0        9       8       16   
