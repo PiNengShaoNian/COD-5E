@@ -1,0 +1,9 @@
+分别画出数据0xabcdef12在大端编址和小端编址的机器上是如何分布在存储器中
+的。(假定数据从地址0开始存储。)
+
+         小端序                    大端序
+Address         Data        Address          Data
+12               12           12              ab
+8                ef           8               cd
+4                cd           4               ef
+0                ab           0               12
