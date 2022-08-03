@@ -1,0 +1,25 @@
+2. 18假设可以将MIPS寄存器文件扩展到128个寄存器，并将指令集中的指令数扩展为原来的4倍。
+2.18.1 [5]<2.5> 这将如何影响R型指令的每个位字段的大小?
+2.18.2 [5]<2.5> 这将如何影响I型指令的每个位字段的大小?
+2.18.3 [5]<2.5, 2. 10>在提出的这两种变化中，每种变化如何减少- -个MIPS汇编程序的大小?另
+-方面，如何增大-一个MIPS汇编程序的大小?
+
+答:
+2.18.1
+opcode would be 8 bits, rs, rt, rd fields would be 7 bits each
+
+2.18.2
+opcode would be 8 bits, rs, rt, rd fields would be 7 bits each
+
+2.18.3
+more registers -> more bits per instruction -> could increase size
+更多的寄存器  -> 需要更多位的寄存器标识 -> 提升程序代码
+
+more registers -> less register spills -> less instructions
+更多的寄存器 -> 更少的寄存器溢出 -> 更少的指令数量
+
+more instructions -> more appropriate instruction -> decrease code size
+更多种类的指令  -> 完成同样的功能，会有更简单更适合的指令 -> 减少代码大小
+
+more instructions -> larger opcodes -> larger code size
+更多种类的指令 ->  需要更多位的标识  -> 更大的代码大小
