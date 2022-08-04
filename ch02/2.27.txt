@@ -1,0 +1,26 @@
+2.27 [5] <2.7>将下面的C代码翻译为MIPS汇编代码。要求使用的指令数目最少。假设值a、b、
+i和j分别存放在寄存器$s0、$s1、 $t0 和$t1中。另外假设寄存器$s2中存放着数组D
+的基地址。
+for(i=0; i<a; i++)
+  for(j=0; j<b; j++)
+    D[4*j] = i + j;
+
+答：
+       addi $t0, $0, 0
+       beq $0, $0, TEST1
+
+LOOP1: addi $t1, $0, 0
+       beq $0, $0, TEST2
+
+LOOP2: add $t3, $t0, $t1
+       sll $t2, $t1, 4
+       add $t2, $t2, $s2
+       sw $t3, ($t2)
+       addi $t1, $t1, 1
+
+TEST2: slt $t2, $t1, $s1
+       bne $t2, $0, LOOP2
+       addi $t0, $t0, 1
+
+TEST1: slt $t2, $t0, $s0
+       bne $t2, $0, LOOP1 

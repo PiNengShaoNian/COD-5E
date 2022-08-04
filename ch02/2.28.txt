@@ -1,0 +1,4 @@
+2.28 [5] <2.7>. 实现习题2.27中的C代码用了多少条MIPS汇编指令?如果变量a和b分别初始化为
+10和1,并且D中所有元素初始化为0,将整个循环执行完成时，-共执行了多少条MIPS指令?
+
+14 instructions to implement and 158 instructions executed
