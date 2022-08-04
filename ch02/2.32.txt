@@ -1,0 +1,6 @@
+2.32 [5] <2. 8 >函数经常被编译器实现为内联“in- line”的形式。内联函数是将函数体复制到程序空间
+中，以消除函数调用的开销。对于上面的函数，请用MIPS汇编实现内联版本的C代码。请问实现
+这个函数总共可以减少多少条MIPS汇编指令? (假设C的变量n被初始化为5。)
+
+2.32 Due to the recursive nature of the code, it is not possible for the compiler to
+in-line the function call.

@@ -1,0 +1,11 @@
+2.33 [5] <2.8>对于每一次函数调用，画出调用后栈的内容。(假定栈指针被初始化为0fffff, 寄存
+器的使用情况和图2-11相同。)
+
+after calling function lib:
+
+old $sp  ->  0x7ffffffc      ???
+                -4         contents of register $ra for fib(N)
+                -8         contents of register $s0 for fib(N)
+                -12        contents of register $a0 for fib(N)
+
+there will be N - 1 copies of $ra, $s0, and $a0

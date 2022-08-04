@@ -1,0 +1,17 @@
+2.29 [5] <2.7>将下面的循环翻译成C代码。假定寄存器$t1中存放C语言级的整数i，$s2 中存
+放C语言级的整数result. $s0 存放整数数组MemArray的基地址。
+
+addi $t1, $0, $0
+L00P: 
+lW $s1, 0($s0)
+add $s2，$s2， $s1
+addi $s0, $s0, 4
+addi $t1, $t1, 1
+slti $t2, $t1, 100
+bne $t2, $s0, L00P
+
+答:
+for(i = 0; i < 100; ++i) {
+    result += MemArray[s0];
+    s0 = s0 + 4; 
+}

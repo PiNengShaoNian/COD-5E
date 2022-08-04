@@ -1,0 +1,22 @@
+2.34 将下面的函数翻译成MIPS汇编语言。如果需要使用寄存器$t0到$t7,请从编号小的寄存器开
+始使用。假设函数func的声明为“int f (int a, int b);",函数f的代码如下:
+int f(int a，int b，int c，int d){
+   return func( func(a,b), c+d);
+}
+
+
+f: addi $sp, $sp -12
+   sw $ra, 8($sp)
+   sw $s1, 4($sp)
+   sw $s0, 0($sp)
+   move $s1, $a2
+   move $s0, $a3
+   jal func
+   move $a0, $v0
+   add $a1, $s0, $s1
+   jal func
+   lw $ra, 8($sp)
+   lw $s1, 4($sp)
+   lw $s0, 0($sp)
+   addi $sp, $sp, 12
+   jr $ra

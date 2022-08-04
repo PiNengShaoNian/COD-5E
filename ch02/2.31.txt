@@ -1,0 +1,38 @@
+2.31 [5] <2.8>使用MIPS汇编实现下面的C代码。该函数一共执行了多少条MIPS指令?
+int fib(int n){
+  if (n == 0)
+    return 0;
+  else if (n == 1)
+    return 1:
+  else
+    return fib(n-1) + fib(n-2);
+}
+
+答:
+fib:   addi $sp, $sp, 12     # make room on stack
+       sw $ra, 8($sp)        # push $ra
+       sw $s0, 4($sp)        # push $s0
+       sw $a0, 0($sp)        # push $a0 (N)
+       bgt $a0, $0, test2    # if(n > 0), then test if(n = 1)
+       add $v0, $0, $0         else fib(0) = 0
+       j rtn
+
+test2: addi $t0, $0, 1       
+       bne $t0, $a0, gen     # if n > 1, gen
+       add $v0, $0, $t0      # else fib(1) = 1
+
+gen:   subi $a0, $a0, 1      # n - 1
+       jal fib               # call fib(n - 1)
+       add $s0, $v0, $0      # copy fib(n - 1)
+       sub $a0, $a0, 1       # n - 2
+       jal fib               # call fib(n - 2)
+       add $v0, $v0, $s0     # fib(n - 1) + fib(n - 2)
+
+rtn:   lw $a0, 0($sp)        # pop $a0
+       lw $s0, 4($sp)        # pop $s0
+       lw $ra, 8($sp)        # pop $a
+       addi $sp, $sp, 12     # restore sp
+       jr $ra
+
+# fib(0) = 12 instructions， fib(1) = 14 instructions,
+# . fib(N) = 26 + 18N instructions for N >=2
