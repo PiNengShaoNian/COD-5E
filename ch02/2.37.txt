@@ -1,0 +1,42 @@
+2.37 [5] <2. 9>用MIPS汇编语言写一段代码将包含十进制正整数和负整数的ASCII码的数串转换成整
+数。在程序中使用寄存器$a0处理由数字0 ~9组成的非空串的地址。程序应该计算与这个数字
+串等值的整数，并将这个整数存放在寄存器$v0中。如果在字符串的任意位置出现非数字字符，
+程序停止并将-1存人$v0。例如，如果寄存器$a0指向3字节的序列50，52, 0 (非终结的
+字符串“24")， 当程序停止的时候，寄存器$v0中的值应该是24。
+
+等价C代码
+int stoi(char *str) {
+    int result = 0;
+    for(int i = 0; str[i] != '\0'; ++i) {
+        if(str[i] < '0' || str[i] > '9') {
+            result = -1;
+            return result;
+        }
+        result = result * 10 + str[i] - '0';
+    }
+
+    return result;
+}
+
+MAIN:  addi $sp, $sp, -4
+       sw $ra, ($sp)
+       add $t6, $0, 0x30   # '0'
+       add $t7, $0, 0x39   # '9'
+       add $s0, $0, $0
+       add $t0, $a0, $0
+LOOP   lb $t1, ($t0)       # chars[i]
+       slt $t2, $t1, $t6   # $t2 = chars[i] < '0' ? 1 : 0
+       bne $t2, $0, DONE   # if $t2 != 0 then goto DONE
+       slt $t2, $t7, $t1   # $t2 = '9' < chars[i] ? 1 : 0
+       bne $t2, $0, DONE   # if $t2 != 0 then goto DONE
+       sub $t1, $t1, $t6   # $t1 = chars[i] - '0'
+       beq $s0, $0, FIRST  # if $s0 == 0 then goto FIRST
+       mul $s0, $s0, 10    # $s0 = $s0 * 10
+FIRST: add $s0, $s0, $t1   # $s0 = $s0 + $t1
+       addi $t0, $t0, 1    # $t0 = $t0 + 1
+       j LOOP  
+
+DONE:  add $v0, $s0, $0
+       lw $ra, ($sp)
+       addi $sp, $sp, 4
+       jr $ra

@@ -1,0 +1,6 @@
+2.35 [5] <2.8 >请问这个函数可以使用尾调用优化吗?如果不能，请说明原因。如果能，请说明优
+化前后执行f的指令数的差别。
+
+We can use the tail-call optimization for the second call to func, but then we must restore $ra, $s0, $s1, and $sp before that call. We save only one instruction(jr $ra).
+我们可以在第二次调用func时使用尾部调用优化，但是我们必须在调用前恢复$ra、$s0、$s1和$sp。我们只保存一条 指令(jr $ra)。
+
