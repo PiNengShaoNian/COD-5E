@@ -1,0 +1,21 @@
+2. 46假设给定处理器的算术指令的 CPI是1，取数/存数指令的CPI是10,分支指令的CPI是3。假
+设-一个程序由5亿条算术指令、3亿条取数/存数指令和1亿条分支指令组成。
+2.46.1 [5] <2.19 >假设向指令集中添加了新的、功能更强的算术指令。通过使用这些功能更强大的算
+术指令平均可以减少程序执行所需要的25%的算术指令，而时钟周期的开销增长了10%。请问
+这是好的设计选择吗?为什么?
+2.46.2 [5] <2.19 >假设我们找到一种可以使算术指令性能达到原来两倍的方法。请问我们机器的整体
+加速是多少?假设我们找到- -种可以使算术指令性能达到原来10倍的方法，那么机器的性能整
+体加速又是多少?
+
+
+2.46.1
+Answer is no in all cases. Slows down the computer.
+CCT = clock cycle time
+ICa = instruction count (arithmetic)
+ICls = instruction count (load/store)
+ICb = instruction count (branch)
+new CPU time = 0.75*old ICa*CPIa* 1.1*oldCCT
++ oldICls*CPIls*1.1*oldCCT
++ oldICb*CPIb*1.l*oldCCT
+The extra clock cycle time adds suficiently to the new CPU time such that
+it is not quicker than the old execution time in all cases.

@@ -1,0 +1,20 @@
+2.43 [5] <2.11>写出实现下面C代码的MIPS汇编代码:
+1ock(lk);
+shvar=max(shvar,x);
+un1ock(lk);
+假设变量1k的地址在$a0中，变量shvar的地址在$al中，变量x的地址在$a2中。你所
+编写的这个重要部分的代码不能包含任何函数调用。使用ll/sc指令实现lock()操作，而.
+unlock()操作可以简单地使用存数指令。.
+
+
+trylk: li $t1, 1          # $t1 = 1
+       ll $t0, 0($a0)     # $t0 = Mem[$a0]
+       bnez $t0, trylk    # 如果不为零则开始自旋等待其他地方将锁释放
+       sc $t1, 0($a0)     # 加锁
+       beqz $t1, trylk    # 加锁失败，在ll和sc执行期间锁的值已经变更，再次开始自旋
+       lw $t2, 0($a1)     # 加锁成功，取出shvar的值
+       lw $t3, 0($a2)
+       slt $t4, $t2, $t3  # 判断shvar和x的大小
+       beqz $t4, skip     # 如果shvar大于x则跳过对shvar的交换
+       sw $t3, 0($a1)     # 交换shvar的值为x
+skip:  sw $0, 0($a0)      # 释放锁 
