@@ -1,0 +1,10 @@
+3.3 [10]<3.2>将5ED4转换成二进制数。使用十六进制表示计算机中的数值很具有吸引力的原因是
+什么?
+
+答
+0b0101 1110 1101 0100
+
+The attraction is that each hex digit contains one of 16 different characters
+(0-9,A-E). Since with 4 binary bits you can represent 16 differnt pattern,
+in hex each digit requires exactly 4 binary bits, And bytes are by defination 8
+long, so two hex digits are all that are required to represent the contents of 1 byte.
