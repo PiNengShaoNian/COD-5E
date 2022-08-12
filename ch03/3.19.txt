@@ -1,0 +1,37 @@
+3.19 [30] <3.4 >用图3-11中的硬件结构计算74除以21,并给出一个类似于图3-10中的表。你需要
+给出每一步中各个寄存器的值。假设A和B都是6位无符号整数。这个算法使用-一个和图 3-9中
+稍微不同的方法。这个算法你可能会认为很难，做一次或者两次试验，或者去网上寻找办法来让
+它正确工作。(提示:一种可能的解决方案是利用图3-11中暗示的那个余数寄存器既可右移也可
+左移的事实。)
+
+
+答:
+ In these solutionsa 1 or a 0 was added to the Quotient if the remainder was greater than or equal to 0. 
+ However, an equally valid solution is to shift ina 1 or 0, but if you do this you must do a compensating right shift of the remainder (only the remainder, not the entire remainder/quotient combination) after the last step.
+
+Step       Action          Divisor        Remainder/Quotient
+0         Initial Vals    010 001         000 000 111 100
+
+          R<<             010 001         000 001 111 000
+1         Rem=Rem-Div     010 001         111 000 111 000
+          Rem<0,R+D       010 001         000 001 111 000
+
+          R<<             010 001         000 011 110 000
+2         Rem=Rem-Div     010 001         110 010 110 000
+          Rem<0,R+D       010 001         000 011 110 000
+
+          R<<             010 001         000 111 100 000
+3         Rem=Rem-Div     010 001         110 110 110 000
+          Rem<0,R+D       010 001         000 111 100 000
+
+          R<<             010 001         001 111 000 000
+4         Rem=Rem-Div     010 001         111 110 000 000
+          Rem<0,R+D       010 001         001 111 000 000
+
+          R<<             010 001         011 110 000 000
+5         Rem=Rem-Div     010 001         111 110 000 000
+          Rem>0,R0=1      010 001         011 110 000 000
+
+          R<<             010 001         011 010 000 010
+5         Rem=Rem-Div     010 001         001 001 000 010
+          Rem>0,R0=1      010 001         001 001 000 011
