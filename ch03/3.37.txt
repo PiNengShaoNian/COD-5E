@@ -1,0 +1,9 @@
+3.37 [10] <3.9>根据练习题3.35和练习题3.36的结果，
+计算(3.41796875 x10^-3 x 6.34765625 x 10^-3) x1.05625 x10^2 
+= 3.41796875 x 10^-3 x (6.34765625 x 10 ^ -3 x 1.05625 x 10 ^ 2)是否成立?
+
+答:
+No
+A * B = 1.1101110000 * 2 ^ -17 UNDERFLOW: Cannot represent
+A * (B * C) = 1.1000100100 * 2 ^ -10
+A and B are both small, so their product does not fit into the 16-bit floating point format being used.
