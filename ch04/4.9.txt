@@ -1,0 +1,75 @@
+4.9本练习题讨论数据相关如何影响4.5节中基本五级流水线的运行。结合下面的指令序列完成
+问题:
+or r1.r2,r3
+or r2,r1,r4
+or r1,r1,r2
+另外，假定每种相关旁路的周期时间如下:
+无旁路     全旁路         ALU-ALU旁路
+250ps      300ps            290ps
+4.9.1 [10]<4.5> 指出指令序列中存在的相关及其类型。
+4.9.2 [10] <4.5>假设该流水线处理器没有旁路，指出指令序列中存在的冒险并加人nop指令以消
+除冒险。
+4.9.3 [10] <4.5 >假设该流水线处理器中有充分的旁路。指出指令序列中存在的冒险并加入nop指
+令以消除冒险。
+4.9.4 [10] <4.5>该指令序列在无旁路和有充分的旁路时，总执行时间分别是多少?后者相对于前
+者的加速比是多少?
+4.9.5 [10] <4.5>如果仅有ALU至ALU的旁路(没有从MEM到EX的旁路)，如何加入nop指令以
+消除可能的冒险?
+4.9.6 [10] <4.5>该指令序列在仅有ALU至ALU的旁路时，总执行时间分别是多少?与无旁路的情
+况相比，加速比是多少?
+
+
+答:
+4.9.1
+Instruction sequence                Dependences
+I1:  OR  R1,R2,R3               RAW on R1 from I1 to I2 and I3
+I2:  OR  R2,R1,R4               RAW on R2 from I2 to I3
+I3:  OR  R1,R1,R2               WAR on R2 from I1 to I2
+                                WAR on R1 from I2 to I3
+                                WAW on R1 from I1 to I3
+
+4.9.2
+在基本的五级流水线中，WAR和WAW的依赖不会引起任何危险。在没有转发的情况下，
+一条指令和下两条指令之间的任何RAW依赖（如果寄存器读发生在时钟周期的后半段，而寄存器写发生在前半段）。
+可以通过插入NOP指令来消除:
+
+Instruction sequence
+I1:  OR  R1,R2,R3
+NOP                               Delay I2 to avoid RAW hazard on R1 from I1
+NOP
+I2:  OR  R2,R1,R4
+NOP                               Delay I3 to avoid RAW hazard on R2 from I2
+NOP
+I3:  OR  R1,R1,R2
+
+4.9.3
+在完全转发的情况下，ALU指令可以将一个值转发到下一条指令的EX级，而不会有危险。
+但是，一个load 不能转发到下一条指令的EX阶段。通过插入NOP指令来消除这些数据以来的指令为。
+
+
+Instruction sequence
+OR R1,R2,R3
+OR R2,R1,R4                      No RAW hazard on R1 from I1(forwarded)
+OR R1,R1,R2                      No RAW hazard on R2 from I2(forwarded)
+
+4.9.4
+总的执行时间是时钟周期时间乘以周期数。在没有任何停顿的情况下，
+一个三条指令的序列在7个周期内执行完成（第5个周期完成第一条指令，接下来每过一个周期完成一条)。
+在4.9.2中，没有转发的执行必须为每个NOP增加一个停顿。总的来说，我们得到。
+
+No forwarding                     With forwarding          Speedup due to forwarding
+(7 + 4) * 180ps = 1980ps        7 * 240ps = 1680ps                1.18
+
+
+4.9.5
+在只有ALU-ALU转发的情况下，一条ALU指令可以转发到下一条指令，但不能转发到第二条指令（因为那将是从MEM转发到EX）。
+lw根本不能转发，因为它在MEM阶段决定了数据值，此时对于ALU-ALU转发来说已经太晚了。
+
+Instruction sequence
+OR R1,R2,R3
+OR R2,R1,R4                      ALU-ALU forwarding of R1 from I1
+OR R1,R1,R2                      ALU-ALU forwarding of R2 from I2
+
+4.9.6
+No forwarding                       With ALU-ALU forwarding only          Speedup with ALU-ALU forwarding
+(7 + 4) * 180ps = 1980ps                  7 * 210ps = 1470ps                         1.35
