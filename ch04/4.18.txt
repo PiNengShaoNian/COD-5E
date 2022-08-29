@@ -1,0 +1,123 @@
+4.18本练习题比较单发射和双发射处理器的性能，并考虑对双发射处理器进行程序优化。根据下表
+的C代码分别回答下列问题。
+for(i=0;i!=j;i+=2)
+  b[i]=a[i]-a[i+1];
+在编写MIPS代码时，假设变量被保存在寄存器中，如下表所示，除了空闲的寄存器，其余寄存
+器都被用来保存变量的值，因此不能再用作其他用途。
+i    j    a    b    c        空闲
+R5   R6   R1   R2   R3    R10, R11，R12
+
+4.18.1 [10] <4.10>将这段C代码翻译成MIPS代码。这种翻译必须是直接的，不允许对代码进行重
+排序以达到更好的性能。
+4.18.2 [10] <4.10 >如果循环仅执行两次后就退出，画出练习题4. 18. 1中MIPS代码在图4-69的双发
+射处理器中执行的流水线图。假设处理器能进行完美的分支预测，并且一个周期能取任意两条
+指令(不仅仅是连续的两条指令)。
+4.18.3 [10] <4.10>重排序练习题4.18. 1中的MIPS代码，以在图4-69的双发射静态调度处理器上获
+得更好的性能。
+4.18.4 [10] <4.10>重做练习题4.18. 2,但这次使用练习题4.18. 3中的MIPS代码。
+4.18.5 [10] <4.10>从单发射处理器到图4-69的双发射处理器，性能的加速比是多少?在单发射和
+双发射处理器分别运行练习题4.18. 1的代码，假设循环执行1 000000次。与练习题4.18.2
+相同，假设处理器能进行完美的分支预测，并且一个双发射处理器在同一个周期能取任意两
+条指令。
+4.18.6 [10]<4. 10>重做练习题4.18.5,这次假设双发射处理器中- -条指令可以是任意类型的，而另
+一条指令必须是非存取指令。
+
+答:
+4.18.1
+         Add R5,R0,R0
+Again:   BEQ R5,R6,END
+         ADD R10,R5,R1
+         LW R11,0(R10)
+         LW R10,1(R10)
+         SUB R10,R11,R10
+         ADD R11,R5,R2
+         SW R10,0(R11)
+         ADDI R5,R5,2
+         BEQ R0,R0,Again
+END:
+
+4.18.2
+Instructions                      Pipeline                             
+ 
+Add R5,R0,R0            IF  ID  EX  ME  WB
+BEQ R5,R6,END           IF  ID  **  EX  ME  WB
+ADD R10,R5,R1               IF  **  ID  EX  ME  WB
+LW R11,0(R10)               IF  **  ID  **  EX  ME  WB
+LW R10,1(R10)                       IF  **  ID  EX  ME  WB
+SUB R10,R11,R10                     IF  **  ID  **  **  EX  ME  WB
+ADD R11,R5,R2                               IF  **  **  ID  EX  ME  WB
+SW R10,0(R11)                               IF  **  **  ID  **  EX  ME  WB
+ADDI R5,R5,2                                            IF  **  ID  EX  ME  WB
+BEQ R0,R0,Again                                         IF  **  ID  **  EX  ME  WB
+BEQ R5,R6,END                                                   IF  **  ID  EX  ME  WB
+ADD R10,R5,R1                                                   IF  **  ID  **  EX  ME  WB
+LW R11,0(R10)                                                           IF  **  ID  EX  ME  WB
+LW R10,1(R10)                                                           IF  **  ID  **  EX  ME  WB
+SUB R10,R11,R10                                                                 IF  **  ID  **  EX  ME  WB
+ADD R11,R5,R2                                                             
+SW R10,0(R11)
+ADDI R5,R5,2
+BEQ R0,R0,Again
+BEQ R5,R6,END
+
+4.18.3
+完全并行执行两条指令的唯一方法是让一条加载/存储指令与另一条指令一起执行。
+为了达到这个目的，在每条加载/存储指令周围，我们将尝试放置一些与加载/存储指令没有依赖关系的非加载/存储指令。
+
+        ADD r5,r0,r0
+Again:  ADD R10,R5,R1
+        BEQ R5,R6,END
+        LW R11,0(R10)
+        ADD R12,R5,R2
+        LW R10,1(R10)
+        ADDI R5,R5,2
+        SUB R10,R11,R10
+        SW R10,0(R12)
+        BEQ R0,R0, Again
+END
+请注意，我们现在是在检查是否应该继续循环之前计算a+i。
+这是OK的，因为我们被允许 "扔掉 "R10。如果我们退出循环，会有一条额外的指令被执行，
+但是如果我们留在循环中，我们允许这两条内存指令与其他指令并行执行
+
+
+4.18.4
+Instructions                            Pipeline
+
+ADD r5,r0,r0            IF  ID  EX  ME  WB
+ADD R10,R5,R1           IF  ID  **  EX  WB
+BEQ R5,R6,END               IF  **  ID  EX  ME  WB
+LW R11,0(R10)               IF  **  ID  EX  ME  WB
+ADD R12,R5,R2                       IF  ID  EX  ME  WB
+LW R10,1(R10)                       IF  ID  EX  ME  WB
+ADDI R5,R5,2                            IF  ID  EX  ME  WB
+SUB R10,R11,R10                         IF  ID  **  EX  ME  WB
+SW R10,0(R12)                               IF  ** ID  EX  ME  WB
+BEQ R0,R0, Again                            IF  ** ID  EX  ME  WB
+ADD R10,R5,R1                                      IF  **  ID  EX  ME  WB
+BEQ R5,R6,END                                      IF  **  ID  **  EX  ME  WB
+LW R11,0(R10)                                              IF  **  ID  EX  ME  WB
+ADD R12,R5,R2                                              IF  **  ID  EX  ME  WB
+LW R10,1(R10)
+ADDI R5,R5,2
+SUB R10,R11,R10
+SW R10,0(R12)
+BEQ R0,R0, Again
+ADD R10,R5,R1
+BEQ R5,R6,END
+
+
+4.18.5
+CPI for 1-issue                             CPI for 2-issue                                                                 Speedup
+1.11(10 cycles per 9 instructions).    1.06(19 cycles per 18 instructions). neither                                            1.05
+There is 1 stall cycle in each         of the two LW instructions can execute in parallel with
+iteration due to a data hazard         another instruction, and SUB stalls because it depends on the second
+between the second LW and the          LW. The SW instruction executes in parallel with 
+next instruction(SUB).                 ADDI in even-numbered iterations.
+
+
+4.18.6
+CPI for1-issue                       CPI for 2-issue
+1.11                         0.83 (15 cycles per 18 Instructions). In all iterations, SUB is stalled
+                             because it depends on the second LW. the only instruction that 
+                             execute in odd-numbered iterations as a pair are ADDI and BEQ
+                             In even-numbered iterations. only the two LW instruction cannot execute as a pair.
