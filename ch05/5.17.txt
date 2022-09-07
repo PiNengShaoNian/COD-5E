@@ -1,0 +1,91 @@
+5.17 cache一致性考虑的是多个处理器看到的是同一个cache块。下表显示了两个处理器以及它们对
+一个cache块X中两个不同字的读/写操作( 初始值X[0] =X[1] =0)。假定整数为32位。
+P1                               P2
+x[0]++;  x[1]= 3;       x[0]= 5;   x[1] += 2;
+5.17.1 [15] <5.10>当执行一个正确的cache一致性协议时，列出给定cache块可能的值。如果协议没
+有保证cache一致性，至少列出一个cache块可能的值。
+5.17.2 [15] <5.10>对于监听协议，列出每个处理器/cache完成上面的读/写操作时正确的操作顺序。
+5.17.3 [10] <5.10>在最好和最差情况下，完成列出的读/写指令, cache缺失次数分别是多少?
+存储器一致性考虑的是看到的多个数据项。下表显示了两个处理器以及它们对不同的eache块
+的读/写操作(A和B的初始值为0)。
+
+P1                                 P2
+A=1; B=2; A+=2;  B++;         C=B;  D=A;
+
+5.17.4 [15] <5.10>若使用5.10节列出的保证一致性协议的假设，请列出C和D的值。
+5.17.5 [15] <5.10>如果假设不成立，那么至少列出一对C和D可能的值。
+5.17.6 [15] <5.3,5.10>对于写策略和写分配策略的多种组合，哪些组合可以简化协议的执行?
+
+答:
+5.17.1
+指令有6中可能的执行顺序.
+Ordering 1:
+P1              P2
+X[0]++;
+X[1]=3;
+              X[0]=5;
+              X[1]+=2;
+Results: (5,5)
+
+Ordering 2:
+P1              P2
+X[0]++;
+              X[0]=5;
+X[1]=3;
+              X[1]+=2;
+Results: (5,5)
+
+Ordering 3:
+P1              P2
+              X[0]=5;
+X[0]++;
+              X[1]+=2;
+X[1]=3;
+Results:(6,3)
+
+Ordering 4:
+P1              P2
+X[0]++;
+              X[0]=5;
+              X[1]+=2;
+X[1]=3;
+Results: (5,3)
+
+Ordering 5:
+P1              P2
+              X[0]=5;
+X[0]++;
+X[1]=3;
+              X[1]+=2;
+Results: (6,5)
+
+Ordering 6:
+P1              P2
+              X[0]=5;
+              X[1]+=2;
+X[0]++;
+X[1]=3;
+Results: (6,3)
+If coherency isn't ensured:
+P2's operations take precedence over P1's: (5,2)
+
+5.17.2
+P1                P1 cache status/action       P2         P2 cache status/action
+                                             X[0]=5       invalidate X on other caches,read X in 
+                                                          exclusive state, write X block in cache
+                                             
+                                             X[1]+=2;     read and write X block in cache
+
+X[0]++;           read value of X into cache              X block enters shared state
+                  send invalidate message                 X block is invalided
+                  write X block in cache
+
+X[1]=3;           write X block in cache
+
+5.17.3
+Best case:
+Ordering 1 and 6 above, which require only two total misses.
+Worst case:
+Ordering 2 and 3 above, which require 4 total cache misses.
+
+5.17.4
