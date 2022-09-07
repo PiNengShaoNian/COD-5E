@@ -1,0 +1,57 @@
+5.15广泛使用虚拟机最大的障碍之一是运行虚拟机所导致的执行开销。下表列出了不同的性能参数
+和应用程序行为。
+
+基本的CPI    每10000条          对客户O/S         对VMM执行        每10000条        I/O访问时间
+对客户O/S   指令中特权O/S       执行trap中断       trap中断的       指令中I/O        (包括trap中断
+            访问次数            的性能影响         性能影响        访问次数           客户O/S的时间)
+1.5          120              15个时钟周期       175个时钟周期       30              1100个时钟周期
+
+5.15.1 [10] <5.6>对上面列出的系统计算CPI，假设没有I/O访问。如果VMM性能影响加倍, CPI 是
+多少?如果减半呢?如果一个 虚拟机软件公司希望获得10%的性能损失，那么对VMM执行trap
+中断的最长的时间代价是多少?
+5.15.2[10] <5.6>I/O访问对系统整体性能有着很大的影响。使用上面性能特征值的机器的CPI，假
+设是非虚拟化的系统。如果使用虚拟化的系统，CPI 又是多少?如果系统中I/0访问减半，那么
+这些CPI如何变化?请解释为什么I/O限制性应用受虚拟化影响很小。
+5.15.3[30]<5.6.5.7>比较并对比虚拟存储器和虚拟机的概念。各自的目标是什么?各自的利弊是
+什么?列出一些需要虚拟存储器的情况，以及一些需要虚拟机的情况。
+5.15.4[20]<5.6>5.6节讨论了虚拟化，其中假设虚拟化的系统和底层硬件运行相同的ISA。然而，
+虚拟化的一-种 可能的用途是对非本地的ISA进行仿真。QEMU就是这样-一个例子，可以用来仿
+真多种ISA,如MIPS.SPARC以及PowerPC。与这种虚拟化相关的一些难点是什么?被模拟的
+系统可能比在本地ISA上运行得更快吗?
+
+答:
+5.15.1
+CPI = 1.5 + 120 / 10000 * (15 + 175) = 3.78
+If VMM performance impact doubles => CPI = 1.5 + 120 / 10000 * (15 + 350) = 5.88
+If VMM performance impact halves => CPI = 1.5 + 120 / 10000 * (15 + 87.5) = 2.73
+
+5.15.2
+Non-virtualized CPI = 1.5 + 30/10000 * 1100 = 4.80
+Virtualized CPI = 1.5 + 120 / 10000 * (15 + 175) + 30 / 10000 * (1100 + 175) = 7.60
+Virtualized CPI with half I/O = 1.5 + 120/10000 * (15 + 175) + 15 / 10000 * (1100 + 175) = 5.69
+
+I/O traps usually often require long periods of execution time that can be performed in the guest O/S, with only a small portion of that time needing to be spent in the VMM. As such, 
+the impact of virtualization is less for I/O bound applications.
+
+5.15.3
+Virtual memory aims to provide each application with the ilusion of the entire address space of the machine. 
+Virtual machines aims to provide each operating system with the ilusion of having the entire machine to its disposal. 
+Thus they both serve very similar goals, and offer benefits such as increased security. Virtual memory can allow for 
+many applications running in the same memory space to not have to manage keeping their memory separate.
+
+5.15.4
+Emulating a diferent ISA requires specific handling of that ISA's API. 
+Each ISA has specific behaviors that will happen upon instruction execution, 
+interrupts, trapping to kernel mode, etc. that therefore must be emulated. 
+This can require many more instructions to be executed to emulate each instruction 
+than was originally necessary in the target ISA. This can cause a large performance 
+impact and make it dificult to properly communicate with external devices. An emulated system can potentially 
+run faster than on its native ISA if the emulated code can be dynamically examined and optimized. 
+For example, if the underlying machine's ISA has a single instruction that can handle the execution 
+of several of the emulated system's instructions, then potentially the number of instructions executed can be 
+reduced. This is similar to the case with the recent Intel processors that do micro-op fusion, allowing several instructions to be handled by fewer instructions.
+仿真不同的ISA需要对该ISA的API进行特殊处理。每个ISA都有特定的行为，这些行为会在指令执行、中断、捕获到内核模式等时发生，
+因此必须被仿真。这可能需要执行更多的指令来模拟每个指令，而这些指令在目标ISA中原本是必要的。这可能会造成很大的性能影响，
+并使其难以与外部设备进行适当的通信。如果仿真代码能够被动态检查和优化，那么仿真系统有可能比在其本地ISA上运行得更快。
+例如，如果底层机器的ISA有一条指令可以处理仿真系统的几条指令的执行，那么就有可能减少指令的执行数量。
+这与最近的英特尔处理器的情况类似，该处理器可以进行微操作融合，允许用较少的指令来处理几条指令。
