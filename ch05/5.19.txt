@@ -1,0 +1,47 @@
+5.19 在这个练习中，我们介绍了网络服务器日志的定义，并且为了改进日志处理速度,我们对代码
+优化进行了研究。日志的数据结构定义如下:
+struct entry {
+int srcIP; // remote IP address
+char URL[128]; // request URL (e.g.. “GET index. html")
+1ong 1ong refTime; // reference time
+int status; // connection status
+char browser[64]; // client browser name
+} log [NUM_ ENTRIES]:
+假定日志的处理函数如下:
+topK_sourceIP (int hour):
+5.19.1 [5] <5. 15>对于给定的日志处理函数，在-一个日志项中哪些字段将被访问?假设cache块为64
+字节，没有预取，那么给定的函数平均每个项会引发多少次cache缺失?
+5.19.2[10]<5.15>为了改善cache的应用和局部访问，你会如何重新组织数据结构?请给出结构代码定义。
+5.19.3 [10] <5.15>请举例说明另一种不同数据结构的日志处理函数。如果两个函数都很重要，为了
+改进整体性能，将如何重写程序?补充对代码片段和数据的讨论。
+对于下面的问题，每对基准测试程序使用的数据来自“SPECCPU2000基准测试程序测出的
+cache性能”( http://www.cs.wisc.edu/multifacet/misc/spec2000cache-data/),如下表所示。
+a. Mesa / gcc
+b. mcf / swim
+5.19.4 [10] <5. 15 > 64KiB的数据cache使用不同的组相联度，对于每个基准测试程序，每种缺失类型
+(强制、容量和冲突缺失)相应的缺失率分别是多少?
+5.19.5 [10] <5. 15>为两个基准测试程序共享的一级数据cache选择组相联度，其中cache大小为
+64KiB。如果一级cache是直接映射的，那么为1MiB的二级cache选择组相联度。
+5.19.6 [20] <5. 15>请列举一 个缺失率表的例子说明较高的相联度实际上能增加缺失率。并构建-一个
+cache配置以及访问流来给出证明。
+
+答:
+5.19.1
+srcIP和refTime字段，平均每个项会缺失两次。
+
+5.19.2
+将srcIP和refTime字段放到一个单独的数组中。
+
+5.19.3
+
+5.19.4
+Answers will vary depending on which data set is used. Conflict misses do not occur in fully associative caches. 
+Compulsory (cold) misses are not afected by associativity.
+ Capacity miss rate is computed by subtracting the compulsory miss rate and 
+ the fully associative miss rate (compulsory + capacity misses) from the total miss rate.
+ Conflict miss rate is computed by subtracting the cold 
+ and the newly computed capacity miss rate from the total miss rate. 
+ The values reported are miss rate per instruction, 
+ as opposed to miss rate per memory instruction.
+
+5.19.5
