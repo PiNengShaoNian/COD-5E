@@ -1,0 +1,81 @@
+6.2假设需要 你制作3块蓝莓蛋糕。蛋糕的配料如下: .
+1杯黄油，软化后再用
+1杯糖
+4个大鸡蛋
+1茶匙香草精;
+0.5茶匙盐
+0.25茶匙肉豆蔻
+1.5杯面粉
+1杯蓝莓
+蛋糕的制作流程如下:
+第1步:烤箱预热至160C (325"F)。 在烤盘上抹黄油和一层薄薄的面粉。
+第2步:在一只大碗中使用搅拌器以中速将奶油和糖混合在一起，直到松发。再加鸡蛋、香草
+精、盐和肉豆蔻，搅拌到完全混合。将搅拌器降到低速，一次加入0.5杯面粉，搅拌到完全
+混合。
+第3步:最后慢慢加入蓝莓，将蛋糕均匀地放在烤盘中，烘烤约60分钟。
+6.2.1 [5] <6. 2>你的任务是尽可能高效率地完成3块蛋糕。假定只有一个能容纳一块蛋糕的烤箱、- .
+个大碗、一个烤盘、一个搅拌器，请做出合理的调度以尽可能快地完成任务，并分析瓶颈所在。
+6.2.2 [5] <6. 2>假设你现在有3个碗、3个蛋糕盘子和3个搅拌器。你拥有这些增加的资源后，现在
+的工序加快了多少?
+6.2.3 [5] <6.2 >假设你现在有两个朋友，可帮你烹饪，并且你有一个可容纳3个蛋糕的大烤箱。这些
+将对练习题6.2.1中的计划有何改变?
+6.2.4 [5] <6. 2 >将制作蛋糕与并行计算机中的循环迭代进行类比。分析制作蛋糕的循环中存在的数据
+级并行和任务级并行。
+
+答:
+6.2.1 For this set of resources, we can pipeline the preparation. We assume that
+we do not have to reheat the oven for each cake.
+Preheat Oven
+Mix ingredients in bowl for Cake 1
+Fill cake pan with contents of bowl and bake Cake 1. Mix ingredients for
+Cake 2 in bowl.
+Finish baking Cake 1. Empty cake pan. Fill cake pan with bowl contents for
+Cake 2 and bake Cake 2. Mix ingredients in bowl for Cake 3.
+Finish baking Cake 2. Empty cake pan. Fill cake pan with bowl contents for
+Cake 3 and bake Cake 3.
+Finish baking Cake 3. Empty cake pan.
+       time
+cake1   x x x
+cake2       x x x
+cake3           x x x
+
+
+
+6.2.2 Now we have 3 bowls, 3 cake pans and 3 mixers. We will name them A, B,
+and C.
+Preheat Oven
+Mix incredients in bowl A for Cake 1
+Fill cake pan A with contents of bowl A and bake for Cake 1. Mix ingredients
+for
+Cake 2 in bowl A.
+Finish baking Cake 1. Empty cake pan A. Fill cake pan A with contents of
+bowl A for Cake 2. Mix ingredients in bowl A for Cake 3.
+Finishing baking Cake 2. Empty cake pan A. Fill cake pan A with contents
+of bowl A for Cake 3.
+Finish baking Cake 3. Empty cake pan A. .
+The point here is that we cannot carry out any of these items in parallel
+because we either have one person doing the work, or we have limited
+capacity in our oven.
+
+       time
+cake1   x x x
+cake2       x x x
+cake3           x x x
+
+6.2.3 Each step can be done in parallel for each cake. The time to bake 1 cake, 2
+cakes or 3 cakes is exactly the same.
+       time
+cake1   x x x
+cake2   x x x
+cake3   x x x
+
+6.2.4 The loop computation is equivalent to the steps involved to make one cake.
+Given that we have multiple processors (or ovens and cooks), we can execute
+instructions (or cook multiple cakes) in parallel. The instructions in the loop (or
+cooking steps) may have some dependencies on prior instructions (or cooking
+steps) in the loop body (cooking a single cake).
+Data-level parallelism occurs when loop iterations are independent (i.e, no
+loop carried dependencies).
+Task-level parallelism includes any instructions that can be computed on
+parallel execution units, are similar to the independent operations involved
+in making multiple cakes.

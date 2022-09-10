@@ -1,0 +1,39 @@
+6.3 许多计算机应用程序需 要在一组 数据中进行搜索和对数据进行排序。为了减少这些任务的执行时
+间，已经实现了几种高效的搜索和排序算法。在本练习中，我们将考虑如何将这些任务的并行最
+大化。
+6.3.1 [10] <6.2>请看下面的二进制搜索算法(一种经典的分而治之算法)，该算法可以在已经排序
+的N元素数组A中搜索值X,并返回匹配项的索引号:
+BinarySearch(A[0..N-1]，X) {
+    low=0
+    high=N-1
+    while (low <= high) {
+        mid=(low+high)/2
+        if (A[mid] > X)
+            high = mid -1
+        else if (A[mid] <X)
+            low = mid + 1
+        else
+            return mid // found
+    return -1 // not found
+}
+假设BinarySearch运行在具有Y个核的多核处理器上，且Y远远小于N。请问预期的加速比是多
+少?请画图表示。
+6.3.2 [5]<6.2>接下来， 假设Y与N相同，这会对你前面的结论有何影响?如果要求你获得尽可能
+高的加速比(强比例缩放)，请问该如何修改代码?
+
+6.3.1 While binary search has very good serial performance, it is dificult to
+parallelize without modifying the code. So part A asks to compute the speedup
+factor, but increasing X beyond 2 or 3 should have no benefits. While we can
+perform the comparison of low and high on one core, the computation for mid
+on a second core, and the comparison for A mid] on a third core, without some
+restructuring or speculative execution, we will not obtain any speedup. The answer
+should include a graph, showing that no speedup is obtained after the values of 1,
+2, or 3 (this value depends somewhat on the assumption made) for Y.
+
+6.3.2 In this question, we suggest that we can increase the number of cores (to
+each the number of array elements). Again, given the current code, we really cannot
+obtain any benefit from these extra
+cores. But if we create threads to compare the
+N elements to the value X and perform these in parallel, then we can get ideal
+speedup (Y times speedup), and the comparison can be completed in the amount
+of time to perform a single comparison.
