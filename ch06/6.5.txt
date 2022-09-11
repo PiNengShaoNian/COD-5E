@@ -1,0 +1,49 @@
+6.5考虑下面的归并排序算法(另- -种经典的分而治之算法)。归并排序由John Von Neumann于1945
+年首先提出。其基本思想是将含有m个元素的未排序序列x分为两个子序列，其中每个序列长度
+都大约是原来的一伴。然后对每个子序列重复类似的动作，直到每个子序列的长度均为1。再从长
+度为1的子序列开始，将两个子序列“归并”为-一个排序的序列。
+Mergesort(m)
+    var list 1eft，right， result
+    if 1ength(m) ≤1
+        return m
+    else
+        var midd1e = length(m) / 2
+        for each x in m up to middle
+            add x to 1eft
+        for each X in m after midd1e
+            add x to right
+        left = Mergesort(left)
+        right = Mergesort(right)
+        result = Merge(left， right)
+        return result
+下面的代码实现归并步骤:
+Merge(left, right)
+    var list result
+    while length(left) >0 and length(right) > 0
+        if first(left) ≤first(right)
+            append first(left) to result
+            left = rest(left)
+        else
+            append first(right) to result
+            right = rest(right)
+    if length(left) >0
+        append rest(1eft) to result
+    if length(right) >0
+        append rest(right) to resu1t
+    return result
+6.5.1 [10] <6.2>假设MergeSort运行在具有Y个核的多核处理器上，且Y远远小于m (长度)。请问
+预期的加速比是多少?请画图表示。
+6.5.2 [10] <6.2>接下来，假设Y与m (长度)相同，这会对你前面的结论有何影响?如果要求你获
+得尽可能高的加速比(例如，强比例缩放)，请问该如何修改代码?
+
+答:
+6.5.1
+
+
+6.5.2 In this question, log2(m) is the largest value of Y for which we can obtain
+any speedup without restructuring. But if we had m cores, we could perform sorting
+using a very different algorithm. For instance, if we have greater than m/2 cores,
+we can compare all pairs of data elements, swap the elements if the left element
+is greater than the right element, and then repeat this step m times. So this is one
+possible answer for the question. It is known as parallel comparison sort. Various
+comparison sort algorithms include odd-even sort and cocktail sort.

@@ -1,0 +1,102 @@
+6.4请看下面的 C代码片段:
+for (j=2:j<1000;j++)
+    D[j] = D[j-1]+D[j-2]; 
+与之对应的MIPS代码如下所示:
+      addiu $s2, $zero,7992
+      addiu $s1, $zero,16
+1oop: l.d $f0，-16($s1)
+      l.d $f2，-8($sl)
+      add.d $f4，$f0， $f2
+      s.d $f4，0($s1)
+      addiu $s1，$s1, 8
+      bne $s1，$s2，loop
+每种指令的延迟如下(以周期为单位):
+add.d    L.d     S.d     addiu
+4         6       1        2
+6.4.1 [10] <6.2>执行一次循环所有的指令需要多少周期?
+6.4.2 [10] <6.2>在循环中，如果后面重复执行的指令会依赖于前面指令产生的结果，我们说循环内
+重复存在循环进位相关性( loop- crried dependence)。请分析上面代码中的循环进位相关性，识
+别其中相关的程序变量和汇编级寄存器。可忽略循环变量j。
+6.4.3
+[10] <6.2>第4章中描述了循环展开。对此循环进行展开，并考虑将此代码运行在一个2节点
+的基于消息传递的分布式存储器系统中。假定我们采用6.7节描述的消息传递机制，操作send
+(x, y)可向节点x发送值y,操作receive() 可等待正在发送的数。再假定send操作的发射需要
+1个周期(也就是说，同一节点的后续指令可在下个周期执行)，而接收节点需要10个周期接
+收。接收指令会阻塞接收节点上指令的执行，- -直等到接收节点完成消息接收为止。假设循环会
+执行4次，请计算在该基于消息传递的系统中完成循环所需的周期数。
+6.4.4 [10] <6.2>互联网络的延迟是决定消息传递系统效率的重要因素之一。请问为了让练习
+题6.4. 3中的分布式系统能获得任意加速比，互联网络需要提供多快的速度?
+
+答:
+6.4.1
+  2 * l.d + add.d + s.d + addiu + bne
+= 12 + 4 + 1 + 2 + bne
+= 19 + bne
+
+6.4.2
+数组元素D[j]和D[j - 1]存在循环进位相关性，在当前循环他是$f4在下一次循环他是$f0
+
+6.4.3 This is a very challenging problem and there are many possible
+implementations for the solution. The preferred solution will try to utilize the two
+nodes by unrolling the loop 4 times (this already gives you a substantial speedup
+by eliminating many loop increment, branch and load instructions). The loop
+body running on node 1 would look something like this (the code is not the most
+efficient code sequence):
+addiu $s1， $zero， 996
+l.d $f0， -16($s0)
+l.d $f2， -8($s0)
+loop:
+add.d $f4， $f2， $f0
+add.d $f6， $f4， $f2
+Send (2， $f4)
+Send (2，$f6)
+s.d $f4，0($s0)
+s.d $f6， 8($s0)
+Receive($f8)
+add.d $f10， $f8， $f6
+add.d $f0， $f10， $f8 
+Send (2， $f10)
+Send (2，$f0)
+s.d. $f8, 16($s0)
+s.d $f10， 24($s0)
+s.d $f0 32($s0)
+Receive($f2)
+s.d $f2 40($s0)
+addiu $s0， $s0，48
+bne $s0，$s1，1o0p
+add.d $f4， $f2， $f0
+add.d $f6， $f4， $f2
+add.d $f10， $f8， $f6
+s.d $f4，0($s0)
+s.d $f6， 8($s0)
+s.d $f8，16($s0)
+
+The code on node 2 would look something like this:
+addiu $s2， $zero， 0
+loop:
+Receive ($f12)
+Receive ($f14)
+add.d $f16， $f14， $f12
+Send(1，$f16)
+Receive ($f12)
+Receive ($f14)
+add.d $f16， $f14， $f12
+Send(1，$f16)
+Receive ($f12)
+Receive ($f14)
+add.d $f16， $f14，$f12
+Send(1，$f16)
+Receive ($f12)
+Receive ($f14)
+add.d $f16， $f14，$f12
+Send(1，$f16)
+addiu $s2， $s2，1
+bne $s2，83，1 00p
+Basically Node 1 would compute 4 adds each loop iteration, and Node 2
+would compute 4 adds. The loop takes 1463 cycles, which is much better than
+close to 18K. But the unrolled loop would run faster given the current send
+instruction latency. .
+
+6.4.4 The loop network would need to respond within a single cycle to obtain a
+speedup. This illustrates why using distributed message passing is dificult when
+loops contain loop-carried dependencies.
