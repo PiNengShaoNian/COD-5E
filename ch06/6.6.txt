@@ -1,0 +1,33 @@
+6.6矩阵乘 在大量应用中都扮演重要角色。两个矩阵可以相乘的条件是第一个矩阵的列数 和第二个矩
+阵的行数相同。
+假设我们有一个mxn的矩阵A，还有一个nxp的矩阵B与之相乘。乘法结果为一个mxp的矩
+阵AB(或A●B)。如果令C=AB, CJ代表在矩阵(i, j)位置处的值，则1≤i≤m且1≤j≤p。现
+在我们考虑是否可以将C的计算并行化。假设矩阵在存储器中的存放顺序为: a1.1, a2.1， a3.1，
+a4.1，....
+6.6.1 [10] <6.5>假设我们分别在单核/四核共享存储器的系统计算C,请问四核相对于单核的预期加.
+速比是多少?可忽略存储器相关的问题。
+6.6.2[10]<6.5>如果对C的更新会导致cache缺失(例如更新一行中连续的元素时可能引起伪共
+享)，重新计算练习题6. 6.1中的问题。
+6.6.3 [10] <6.5>有什么办法消除可能出现的伪共享问题?
+
+答:
+6.6.1 This problem presents an “embarrassingly parallel”
+computation
+and asks the student to find the speedup obtained on a 4-core system. The
+computations involved are: (m X p X n) multiplications and (m X p X
+(n - 1)) additions. The multiplications and additions associated with a single
+element in C are dependent (we cannot start summing up the results of the
+multiplications for an element until two products are available). So in this question,
+the speedup should be very close to 4.
+
+6.6.2 This question asks about how speedup is affected due to cache misses caused
+by the 4 cores all working on diferent matrix elements that map to the same cache
+line. Each update would incur the cost of a cache miss, and so will reduce the
+speedup obtained by a factor of 3 times the cost of servicing a cache miss.
+
+6.6.3 In this question, we are asked how to fix this problem. The easiest way to
+solve the false sharing problem is to compute the elements in C by traversing the
+matrix across columns instead of rows (i.e., using index-j instead of index-i). These
+elements will be mapped to different cache lines. Then we just need to make sure
+we process the matrix index that is computed( i, j) and(i + l, j) on the same core.
+This will eliminate false sharing.
