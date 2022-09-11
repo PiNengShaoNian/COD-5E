@@ -1,0 +1,42 @@
+6.8哲学家就餐问题是一个经 典的同步和并发问题。该问题假设就座于- -个圆桌周围的哲学家们可以
+做两件事之一:吃饭或思考。当他们吃饭时，他们不能思考,反之亦然。在圆桌中心有一-碗 通心
+粉。每两个哲学家之间有一只叉子，这样每个哲学家左面有一把叉子，右面也有一把叉子。按照
+吃通心粉的方式，哲学家需要两把叉子才能吃通心粉，而且只能使用紧挨着他左右的两把叉子。
+哲学家不能和其他人说话。
+6.8.1 [10]<6. 7>请描述没有任何哲学家可以吃通心粉的情景。什么样的事件序列会导致该问题发生? .
+6.8.2 [10] <6.7>如何通过引入优先级的概念来解决这一问题?这样可以对所有哲学家公平对待吗?
+请解释原因。
+现在假定我们增加一个服务员负责为哲学家们分配叉子。只有在服务员允许之下他们才可以拿起
+叉子。服务员也知道所有叉子的状态。而且我们要求所有哲学家总是先请求拿起左边的叉子再请
+求拿起右边的叉子，这样可以避免死锁。
+6.8.3 [10] <6.7>对服务员请求的实现，可以将请求放入一个队列，也可以让请求周期性地重试。采
+用队列方式，请求可以按收到的顺序依次处理。使用队列的问题是即使请求排在队列的最前面，
+我们也不能保证总是为其提供服务，因为可能缺乏所需的资源。试想使用1个队列为5个哲学家
+服务的情景，即使有的哲学家有两把叉子都可用但仍然不能为其服务(因为他的请求排在队列的
+后部)。
+6.8.4 [10] <6.7 >如果我们让请求周期性地重试直到资源变为可用，这样是否就解决了练习题6.8.3
+中的问题?请给出原因。
+
+答:
+6.8.1 If every philosopher simultaneously picks up the left fork, then there will be
+no right fork to pick up. This will lead to starvation. .
+
+6.8.2 The basic solution is that whenever a philosopher wants to eat, she checks
+both forks. If they are free, then she eats. Otherwise, she waits until a neighbor
+contacts her. Whenever a philosopher finishes eating, she checks to see if her
+neighbors want to eat and are waiting. If so, then she releases the fork to one of
+them and lets them eat. The dificulty is to first be able to obtain both forks without
+another philosopher interrupting the transition between checking and acquisition.
+We can implement this a number of ways, but a simple way is to accept requests
+for forks in a centralized queue, and give out forks based on the priority defined
+by being closest to the head of the queue. This provides both deadlock prevention
+and fairness.
+
+6.8.3 There are a number or right answers here, but basically showing a case
+where the request of the head of the queue does not have the closest forks available,
+though there are forks available for other philosophers.
+
+6.8.4 By periodically repeating the request, the request will move to the head of
+the queue. This only partially solves the problem unless you can guarantee that
+all philosophers eat for exactly the same amount of time, and can use this time to
+schedule the issuance of the repeated request.
