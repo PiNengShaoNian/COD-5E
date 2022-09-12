@@ -1,0 +1,23 @@
+6.11我们将讨论如何高效地执行下面的代码。假设我们有两种不同的机器，一种是MIMD,另--种
+是SIMD。
+for (i=0; i<2000; i++)
+    for (j=0; j<3000; j++)
+        X_array[i][j] = Y_array[j][i] + 200;
+6.11.1 [10] <6.3>对一个包含4个CPU的MIMD机器，请给出每个CPU上执行的MIPS指令序列。此
+MIMD机器的加速比是多少?
+6.11.2 [20] <6.3>对一个宽度为8的SIMD机器( 也就是说，包含8个并行的SIMD功能单元)，使用
+你自己的对MIPS的SIMD扩展编写一个执行该循环的汇编程序，并比较SIMD和MIMD上执行
+指令的数量。
+
+6.11.1 The answer should include a MIPS program that includes 4 different
+processes that will compute 1/4 of the sums. Assuming that memory latency is not
+an issue, the program should get linear speed when run on the 4 processors (there
+is no communication necessary between threads). If memory is being considered
+in the answer, then the array blocking should consider preserving spatial locality so
+that false sharing is not created.
+
+6.11.2 Since this program is highly data parallel and there are no data
+dependencies, a 8X speedup should be observed. In terms of instructions, the
+SIMD machine should have fewer instructions (though this will depend upon the
+SIMD extensions).
+
